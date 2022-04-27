@@ -20,7 +20,7 @@ void Calculator::run()
 
         if(buffer == 'q')
         {
-            system("clear");
+            //system("clear");
             return;
         }
 

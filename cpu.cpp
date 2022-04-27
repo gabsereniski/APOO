@@ -63,7 +63,7 @@ void Cpu::updateDisplay(int r)
         if(d == '-')
         {
             i++;
-            continue;
+            continue; 
         }
         if(d == '.' && regHasDecSep[r])
         {
@@ -235,7 +235,7 @@ void Cpu::receiveOperation(Operation op)
         return;
     }
 
-    else if((lastReceived == 'o') && op == this->op)
+    else if((lastReceived == 'o') && op == this->op && (op != SQUARE_ROOT && op != PERCENTAGE)) 
     {
         return;
     }
@@ -259,34 +259,31 @@ void Cpu::receiveOperation(Operation op)
     else
     {
         ops[1] = std::stof(regs[1]);
-        if(op == SQUARE_ROOT || op == PERCENTAGE)
+        if((op == SQUARE_ROOT || op == PERCENTAGE) && lastReceived == 'd')
         {
             ops[1] = ALU(ops[1], 0.0, op);
             compute();
-            updateOp(op);
+            //updateOp(op);
             regs[1] = std::to_string(ops[1]);
-        }    
+            updateDisplay(1);
+        } else if ((op == SQUARE_ROOT || op == PERCENTAGE)){
+            ops[0] = ALU(ops[0], 0.0, op);
+            compute();
+            //updateOp(op);
+            regs[0] = std::to_string(ops[0]);
+            updateDisplay(0);
+        }   
     }
 
-    
-    // só quero computar quando apertar em igual
-    if(op == GET_RESULT) {
-        switch(this->op)
-        {
-            case ADDITION: ops[0] = ALU(ops[0], ops[1], ADDITION); break;
-            
-            case SUBTRACTION: ops[0] = ALU(ops[0], ops[1], SUBTRACTION); break;
-            
-            case DIVISION: ops[0] = ALU(ops[0], ops[1], DIVISION); break;
-            
-            case MULTIPLICATION: ops[0] = ALU(ops[0], ops[1], MULTIPLICATION); break;
-
-            default: break;
-        }
-
+    if(lastReceived != '=') {
+        ops[0] = ALU(ops[0], ops[1], this->op);
+        compute();
+    } else if(lastReceived == '=' && op == GET_RESULT) {
+        ops[0] = ALU(ops[0], ops[1], this->op);
         compute();
     }
-    if(op != GET_RESULT) this->op = op, lastReceived = 'o';
+    if(op != GET_RESULT && op != SQUARE_ROOT && op != PERCENTAGE) this->op = op, lastReceived = 'o';
+
 
     std::cout<< lastReceived << " " << op << " " << this->op << ' ';
     puts("lastReceived, op, this-op");
@@ -375,8 +372,3 @@ void Cpu::receiveSignal(Signal s)
         display->setSignal();
     }
 }
-
-/*
-    
-
-*/

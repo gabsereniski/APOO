@@ -37,7 +37,7 @@ void Cpu::compute()
     if(ops[0] < 0) regsSign[0] = NEGATIVE;
     if(isFloat(ops[0])) regHasDecSep[0] = true;
 
-    std::cout << regs[0] << " " << regs[1] << std::endl;
+    //std::cout << regs[0] << " " << regs[1] << std::endl;
 
     updateDisplay(0);
 
@@ -63,7 +63,7 @@ void Cpu::updateDisplay(int r)
         if(d == '-')
         {
             i++;
-            continue;
+            continue; 
         }
         if(d == '.' && regHasDecSep[r])
         {
@@ -152,8 +152,33 @@ void Cpu::setDisplay(Display* display)
 
 void Cpu::receiveDigit(Digit d)
 {
-    if(lastReceived == '\0' || lastReceived == '=') curReg = 0;
+    std::cout<< lastReceived << " " << op << " " << this->op << ' ';
+    puts("lastReceived, op, this-op");
+    for (auto x: regs) {        
+        std::cout << x << ' ';
+    }
+    puts("regs ");
+    for (auto x: ops) {        
+        std::cout << x << ' ';
+    }
+    std::cout << curReg << ' ';
+    puts("curReg");
+
+    puts("++++++++++++++");
+
+    /*
+        Caso um novo número apareça após um '=',
+        isso siginifica que será entrada uma nova conta,
+        portanto é necessário limpar os registradores
+    */
+    if(lastReceived == '\0' || lastReceived == '=') {
+        curReg = 0; 
+        display->clear();
+        clearRegister(0);
+        clearRegister(1);
+    }
     else if(lastReceived == 'o') curReg = 1, display->clear();
+
     if(lastReceived != 'd' &&
         lastReceived != '-' &&
         lastReceived != '.') clearRegister(curReg);
@@ -170,13 +195,48 @@ void Cpu::receiveDigit(Digit d)
     display->add(d);
 
     lastReceived = 'd';
+    std::cout<< lastReceived << " " << op << " " << this->op << ' ';
+    puts("lastReceived, op, this-op");
+    for (auto x: regs) {        
+        std::cout << x << ' ';
+    }
+    puts("regs ");
+    for (auto x: ops) {        
+        std::cout << x << ' ';
+    }
+    puts("ops ");
+    std::cout << curReg << ' ';
+    puts("curReg");
+
+    puts("------------");
 }
 
 void Cpu::receiveOperation(Operation op)
-{    
+{      
+    std::cout << curReg << " ";
+    puts("curReg");
+    for (auto x: regs) {        
+            std::cout << x << ' ';
+        }
+    puts("regs ");
+    for (auto x: ops) {        
+        std::cout << x << ' ';
+    }
+    puts("ops");
+    std::cout<< lastReceived << " " << op << " " << this->op << ' ';
+    puts("lastReceived, op, this-op");
+
+
+    puts("++++++++++++++");
+
     if((lastReceived == 'o' || lastReceived == '\0') && (op == SUBTRACTION))
     {
         receiveSignal(NEGATIVE);
+        return;
+    }
+
+    else if((lastReceived == 'o') && op == this->op && (op != SQUARE_ROOT && op != PERCENTAGE)) 
+    {
         return;
     }
 
@@ -199,37 +259,46 @@ void Cpu::receiveOperation(Operation op)
     else
     {
         ops[1] = std::stof(regs[1]);
-        bool specialOp;
-        if(op == SQUARE_ROOT || op == PERCENTAGE)
+        if((op == SQUARE_ROOT || op == PERCENTAGE) && lastReceived == 'd')
         {
             ops[1] = ALU(ops[1], 0.0, op);
-            specialOp = true;
-        }
-
-        if(specialOp)
-        {
             compute();
-            updateOp(op);
+            //updateOp(op);
             regs[1] = std::to_string(ops[1]);
-        }    
+            updateDisplay(1);
+        } else if ((op == SQUARE_ROOT || op == PERCENTAGE)){
+            ops[0] = ALU(ops[0], 0.0, op);
+            compute();
+            //updateOp(op);
+            regs[0] = std::to_string(ops[0]);
+            updateDisplay(0);
+        }   
     }
 
-    switch(this->op)
-    {
-        case ADDITION: ops[0] = ALU(ops[0], ops[1], ADDITION); break;
-        
-        case SUBTRACTION: ops[0] = ALU(ops[0], ops[1], SUBTRACTION); break;
-        
-        case DIVISION: ops[0] = ALU(ops[0], ops[1], DIVISION); break;
-        
-        case MULTIPLICATION: ops[0] = ALU(ops[0], ops[1], MULTIPLICATION); break;
-
-        default: break;
+    if(lastReceived != '=') {
+        ops[0] = ALU(ops[0], ops[1], this->op);
+        compute();
+    } else if(lastReceived == '=' && op == GET_RESULT) {
+        ops[0] = ALU(ops[0], ops[1], this->op);
+        compute();
     }
+    if(op != GET_RESULT && op != SQUARE_ROOT && op != PERCENTAGE) this->op = op, lastReceived = 'o';
 
-    compute();
-    if(op != GET_RESULT) this->op = op;
-    if(lastReceived != '=') lastReceived = 'o';
+
+    std::cout<< lastReceived << " " << op << " " << this->op << ' ';
+    puts("lastReceived, op, this-op");
+    for (auto x: regs) {        
+        std::cout << x << ' ';
+    }
+    puts("regs ");
+    for (auto x: ops) {        
+        std::cout << x << ' ';
+    }
+    puts("ops ");
+    std::cout << curReg << ' ';
+    puts("curReg");
+
+    puts("------------");
 }
 
 void Cpu::receiveControl(Control ctrl)
@@ -286,8 +355,7 @@ void Cpu::receiveControl(Control ctrl)
             break;
         
         case EQUAL:
-            if(lastReceived != '=')
-                receiveOperation((Operation)GET_RESULT);
+            receiveOperation((Operation)GET_RESULT);
             lastReceived = '=';
             break;
     }

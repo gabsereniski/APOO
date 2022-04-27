@@ -8,7 +8,7 @@ Display::Display()
 
 void Display::print()
 {
-    system("clear");
+    //system("clear");
     printf(" _______________________\n");
     printf("|  ___________________  |\n");
     printf("| |%s| |\n", disp);

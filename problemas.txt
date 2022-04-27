@@ -1,0 +1,7 @@
+regsNod = quantidade de digitos do numero em cada registrador
+regs = numeros em string
+
+1.1
+    Erro no display quando da overflow
+1.2
+    Começar com numero negativo - Display

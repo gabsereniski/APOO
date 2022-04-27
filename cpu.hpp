@@ -24,19 +24,20 @@ class Cpu: public Receiver{
 
     char lastReceived;
     int curReg;
-    bool isNegative;
-
+    bool overflow;
+    
     void clearRegister(int r);
+
+    int countDigits(int r);
+    float isFloat(float n);
 
     float ALU(float op1, float op2, Operation op);
     void compute();
 
-    int countDigits(int r);
-    float isFloat(float n);
-    bool overflow;
-
     void updateOp(Operation op);
     void updateDisplay(int r);
+
+    void reset();
 
 public:
     Cpu();

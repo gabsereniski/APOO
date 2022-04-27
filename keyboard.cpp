@@ -5,8 +5,6 @@ Keyboard::Keyboard()
 {
     cpu = nullptr;
 
-    
-
     if(!build())
     {
         for(int i = 0; i < keyCount; i++)
@@ -37,29 +35,6 @@ void Keyboard::addKey(Key *key)
         keyCount++;
     }
 }
-/*
-void Keyboard::print()
-{
-
-    printf("| ");
-    for(int j = 0; j < 5; j++) printf(" ___");   
-    printf("  |\n");
-    int k = 0;
-    for(int i = 0; i < 5; i++)
-    {
-        printf("| ");
-        for(int j = 0; j < 5; j++) printf("|%s", label[k++]);   
-        printf("| |\n| ");
-        k -= 5;
-        for(int j = 0; j < 5; j++) printf("|%s", sub[k++]);    
-        printf("| |\n| "); 
-        for(int j = 0; j < 5; j++) printf("|___"); 
-        printf("| |\n");
-    }
-
-    printf("|_______________________|\n\n>>");
-           
-}*/
 
 bool Keyboard::build()
 {
@@ -117,3 +92,5 @@ void Keyboard::receiveControl(Control ctrl)
 {
     if(cpu) cpu->receiveControl(ctrl);
 }
+
+void Keyboard::receiveSignal(Signal s){}

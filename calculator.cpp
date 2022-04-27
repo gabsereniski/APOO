@@ -11,6 +11,13 @@ Calculator::Calculator()
 
 }
 
+Calculator::~Calculator()
+{
+    delete cpu;
+    delete keyboard;
+    delete display;
+}
+
 void Calculator::run()
 {
     display->clear();
@@ -20,7 +27,6 @@ void Calculator::run()
 
         if(buffer == 'q')
         {
-            //system("clear");
             return;
         }
 

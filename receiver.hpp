@@ -8,7 +8,7 @@ public:
     virtual void receiveDigit(Digit d) = 0;
     virtual void receiveOperation(Operation op) = 0;
     virtual void receiveControl(Control ctrl) = 0;
-    //virtual void receiveSignal(Signal s) = 0;
+    virtual void receiveSignal(Signal s) = 0;
 };
 
 #endif

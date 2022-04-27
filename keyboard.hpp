@@ -12,9 +12,6 @@ class Keyboard: public Receiver{
 private:
     int keyCount;
     Key *keys[24];
-    bool wasPressed[24];
-
-    //void print();
     Cpu *cpu;
     bool build();
 
@@ -29,6 +26,7 @@ public:
     void receiveDigit(Digit d);
     void receiveOperation(Operation op);
     void receiveControl(Control ctrl);
+    void receiveSignal(Signal s);
 
     friend class Calculator;
 };

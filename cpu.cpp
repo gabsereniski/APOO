@@ -28,6 +28,18 @@ void Cpu::clearRegister(int r)
     regsSign[r] = POSITIVE;
 }
 
+void Cpu::reset()
+{
+    mem = 0.0;
+    overflow = 0;
+
+    for(int r = 0; r < 2; r++)
+        clearRegister(r);
+
+    lastReceived = '\0';
+    curReg = 0;
+}
+
 void Cpu::compute()
 {
     regs[0] = std::to_string(ops[0]);
@@ -36,8 +48,6 @@ void Cpu::compute()
 
     if(ops[0] < 0) regsSign[0] = NEGATIVE;
     if(isFloat(ops[0])) regHasDecSep[0] = true;
-
-    //std::cout << regs[0] << " " << regs[1] << std::endl;
 
     updateDisplay(0);
 
@@ -152,20 +162,6 @@ void Cpu::setDisplay(Display* display)
 
 void Cpu::receiveDigit(Digit d)
 {
-    std::cout<< lastReceived << " " << op << " " << this->op << ' ';
-    puts("lastReceived, op, this-op");
-    for (auto x: regs) {        
-        std::cout << x << ' ';
-    }
-    puts("regs ");
-    for (auto x: ops) {        
-        std::cout << x << ' ';
-    }
-    std::cout << curReg << ' ';
-    puts("curReg");
-
-    puts("++++++++++++++");
-
     /*
         Caso um novo número apareça após um '=',
         isso siginifica que será entrada uma nova conta,
@@ -195,40 +191,10 @@ void Cpu::receiveDigit(Digit d)
     display->add(d);
 
     lastReceived = 'd';
-    std::cout<< lastReceived << " " << op << " " << this->op << ' ';
-    puts("lastReceived, op, this-op");
-    for (auto x: regs) {        
-        std::cout << x << ' ';
-    }
-    puts("regs ");
-    for (auto x: ops) {        
-        std::cout << x << ' ';
-    }
-    puts("ops ");
-    std::cout << curReg << ' ';
-    puts("curReg");
-
-    puts("------------");
 }
 
 void Cpu::receiveOperation(Operation op)
 {      
-    std::cout << curReg << " ";
-    puts("curReg");
-    for (auto x: regs) {        
-            std::cout << x << ' ';
-        }
-    puts("regs ");
-    for (auto x: ops) {        
-        std::cout << x << ' ';
-    }
-    puts("ops");
-    std::cout<< lastReceived << " " << op << " " << this->op << ' ';
-    puts("lastReceived, op, this-op");
-
-
-    puts("++++++++++++++");
-
     if((lastReceived == 'o' || lastReceived == '\0') && (op == SUBTRACTION))
     {
         receiveSignal(NEGATIVE);
@@ -275,30 +241,20 @@ void Cpu::receiveOperation(Operation op)
         }   
     }
 
-    if(lastReceived != '=') {
+    if(lastReceived != '=')
+    {
         ops[0] = ALU(ops[0], ops[1], this->op);
         compute();
-    } else if(lastReceived == '=' && op == GET_RESULT) {
+    } 
+    
+    else if(lastReceived == '=' && op == GET_RESULT)
+    {
         ops[0] = ALU(ops[0], ops[1], this->op);
         compute();
     }
-    if(op != GET_RESULT && op != SQUARE_ROOT && op != PERCENTAGE) this->op = op, lastReceived = 'o';
-
-
-    std::cout<< lastReceived << " " << op << " " << this->op << ' ';
-    puts("lastReceived, op, this-op");
-    for (auto x: regs) {        
-        std::cout << x << ' ';
-    }
-    puts("regs ");
-    for (auto x: ops) {        
-        std::cout << x << ' ';
-    }
-    puts("ops ");
-    std::cout << curReg << ' ';
-    puts("curReg");
-
-    puts("------------");
+    
+    if(op != GET_RESULT && op != SQUARE_ROOT && op != PERCENTAGE)
+        this->op = op, lastReceived = 'o';
 }
 
 void Cpu::receiveControl(Control ctrl)
@@ -311,8 +267,7 @@ void Cpu::receiveControl(Control ctrl)
             break;
         
         case RESET:
-            for(int r = 0; r < 2; r++)
-                clearRegister(r);
+            reset();
             display->clear();
             break;
         
@@ -336,21 +291,26 @@ void Cpu::receiveControl(Control ctrl)
         case MEMORY_READ:
             ops[curReg] = mem;
             regs[curReg] = std::to_string(mem);
+            updateDisplay(curReg);
             break;
 
         case MEMORY_CLEAR:
             mem = 0.0;
             break;
 
-        case MEMORY_ADDITION:        
-            mem += std::stof(regs[curReg]);
-            printf("mem = %f\n", mem);
+        case MEMORY_ADDITION: 
+            if(lastReceived == '=' || lastReceived == 'o')       
+                mem += std::stof(regs[0]);
+            else
+                mem += std::stof(regs[1]);
             regs[curReg] = "0";
             break;
         
         case MEMORY_SUBTRACTION:
-            mem -= std::stof(regs[curReg]);
-            printf("mem = %f\n", mem);
+            if(lastReceived == '=' || lastReceived == 'o')       
+                mem -= std::stof(regs[0]);
+            else
+                mem -= std::stof(regs[1]);
             regs[curReg] = "0";
             break;
         

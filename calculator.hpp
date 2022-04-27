@@ -12,9 +12,9 @@ class Calculator{
     char buffer;
 public:
     Calculator();
-    //~Calculator();
+    ~Calculator();
     void run();
-    //friend class Keyboard;
+
 };
 
 #endif

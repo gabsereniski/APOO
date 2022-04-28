@@ -1,24 +1,24 @@
-#include "calculator.hpp"
+#include "GabrielaCalculator.hpp"
 
-Calculator::Calculator()
+GabrielaCalculator::GabrielaCalculator()
 {
-    cpu = new Cpu;
-    keyboard = new Keyboard;
-    display = new Display;
+    cpu = new GabrielaCpu;
+    keyboard = new GabrielaKeyboard;
+    display = new GabrielaDisplay;
 
     keyboard->setCpu(cpu);
     cpu->setDisplay(display);
 
 }
 
-Calculator::~Calculator()
+GabrielaCalculator::~GabrielaCalculator()
 {
     delete cpu;
     delete keyboard;
     delete display;
 }
 
-void Calculator::run()
+void GabrielaCalculator::run()
 {
     display->clear();
     while(std::cin >> buffer)

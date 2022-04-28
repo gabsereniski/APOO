@@ -11,11 +11,11 @@ enum Control {CLEAR, RESET, DECIMAL_SEPARATOR, MEMORY_READ, MEMORY_CLEAR,
 
 enum Signal {POSITIVE, NEGATIVE};
 
-class Receiver;
-class Key;
-class Keyboard;
-class Display;
-class Cpu;
-class Calculator;
+class GabrielaReceiver;
+class GabrielaKey;
+class GabrielaKeyboard;
+class GabrielaDisplay;
+class GabrielaCpu;
+class GabrielaCalculator;
 
 #endif

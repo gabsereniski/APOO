@@ -1,18 +1,18 @@
-#ifndef _DISPLAY_H_
-#define _DISPLAY_H_
+#ifndef _GABRIELADISPLAY_H_
+#define _GABRIELADISPLAY_H_
 
 #include "commons.hpp"
 
 #include <iostream>
 #include <string.h>
 
-class Display{
+class GabrielaDisplay{
     char disp[19];
     void print();
     void shift();
 public:
-    Display();
-    ~Display();
+    GabrielaDisplay();
+    ~GabrielaDisplay();
     void add(Digit d);
     void addDecimalSeparator();
     void setSignal();

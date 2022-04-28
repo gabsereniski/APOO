@@ -1,10 +1,10 @@
-#include "cpu.hpp"
+#include "GabrielaCpu.hpp"
 
 #define GET_RESULT -1
 
 //PRIVATE FUNCTIONS---------------------------------------------//
 
-float Cpu::ALU(float op1, float op2, Operation op)
+float GabrielaCpu::ALU(float op1, float op2, Operation op)
 {
     switch(op)
     {
@@ -19,7 +19,7 @@ float Cpu::ALU(float op1, float op2, Operation op)
     return 0.0;
 }
 
-void Cpu::clearRegister(int r)
+void GabrielaCpu::clearRegister(int r)
 {
     ops[r] = 0.0;
     regs[r] = "0";
@@ -28,7 +28,7 @@ void Cpu::clearRegister(int r)
     regsSign[r] = POSITIVE;
 }
 
-void Cpu::reset()
+void GabrielaCpu::reset()
 {
     mem = 0.0;
     overflow = 0;
@@ -40,7 +40,7 @@ void Cpu::reset()
     curReg = 0;
 }
 
-void Cpu::compute()
+void GabrielaCpu::compute()
 {
     regs[0] = std::to_string(ops[0]);
     regsNod[0] = countDigits(0);
@@ -54,13 +54,13 @@ void Cpu::compute()
     if(lastReceived == 'o') clearRegister(1);
 }
 
-void Cpu::updateOp(Operation op)
+void GabrielaCpu::updateOp(Operation op)
 {
     this->op = op;
     lastReceived = 'o';
 }
 
-void Cpu::updateDisplay(int r)
+void GabrielaCpu::updateDisplay(int r)
 {
     display->clear();
 
@@ -89,13 +89,13 @@ void Cpu::updateDisplay(int r)
 
 }
 
-float Cpu::isFloat(float op)
+float GabrielaCpu::isFloat(float op)
 {
     int n = op;
     return op - (float)n;
 }
 
-int Cpu::countDigits(int r)
+int GabrielaCpu::countDigits(int r)
 {
     float f = isFloat(ops[r]);
     int c = 0;
@@ -130,7 +130,7 @@ int Cpu::countDigits(int r)
 
 //PUBLIC FUNCTIONS-------------------------------------------//
 
-Cpu::Cpu()
+GabrielaCpu::GabrielaCpu()
 {
     display = nullptr;
     mem = 0.0;
@@ -143,7 +143,7 @@ Cpu::Cpu()
     curReg = 0;
 }
 
-Cpu::~Cpu()
+GabrielaCpu::~GabrielaCpu()
 {
     display = nullptr;
     mem = 0.0;
@@ -155,18 +155,13 @@ Cpu::~Cpu()
     curReg = 0;
 }
 
-void Cpu::setDisplay(Display* display)
+void GabrielaCpu::setDisplay(GabrielaDisplay* display)
 {
     this->display = display;
 }
 
-void Cpu::receiveDigit(Digit d)
+void GabrielaCpu::receiveDigit(Digit d)
 {
-    /*
-        Caso um novo número apareça após um '=',
-        isso siginifica que será entrada uma nova conta,
-        portanto é necessário limpar os registradores
-    */
     if(lastReceived == '\0' || lastReceived == '=') {
         curReg = 0; 
         display->clear();
@@ -193,7 +188,7 @@ void Cpu::receiveDigit(Digit d)
     lastReceived = 'd';
 }
 
-void Cpu::receiveOperation(Operation op)
+void GabrielaCpu::receiveOperation(Operation op)
 {      
     if((lastReceived == 'o' || lastReceived == '\0') && (op == SUBTRACTION))
     {
@@ -229,13 +224,11 @@ void Cpu::receiveOperation(Operation op)
         {
             ops[1] = ALU(ops[1], 0.0, op);
             compute();
-            //updateOp(op);
             regs[1] = std::to_string(ops[1]);
             updateDisplay(1);
         } else if ((op == SQUARE_ROOT || op == PERCENTAGE)){
             ops[0] = ALU(ops[0], 0.0, op);
             compute();
-            //updateOp(op);
             regs[0] = std::to_string(ops[0]);
             updateDisplay(0);
         }   
@@ -257,7 +250,7 @@ void Cpu::receiveOperation(Operation op)
         this->op = op, lastReceived = 'o';
 }
 
-void Cpu::receiveControl(Control ctrl)
+void GabrielaCpu::receiveControl(Control ctrl)
 {
     switch(ctrl)
     {
@@ -321,7 +314,7 @@ void Cpu::receiveControl(Control ctrl)
     }
 }
 
-void Cpu::receiveSignal(Signal s)
+void GabrielaCpu::receiveSignal(Signal s)
 {
     if(s)
     {

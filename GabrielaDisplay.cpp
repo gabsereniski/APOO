@@ -1,14 +1,14 @@
-#include "display.hpp"
+#include "GabrielaDisplay.hpp"
 
-Display::Display()
+GabrielaDisplay::GabrielaDisplay()
 {
     memset(disp, ' ', 19);
     disp[19] = '\0';
 }
 
-Display::~Display(){}
+GabrielaDisplay::~GabrielaDisplay(){}
 
-void Display::print()
+void GabrielaDisplay::print()
 {
     system("clear");
     printf("\n     _______________________\n");
@@ -26,38 +26,38 @@ void Display::print()
     printf(">> ");
 }
 
-void Display::shift()
+void GabrielaDisplay::shift()
 {
     for(int i = 2; i < 18; i++)
         disp[i] = disp[i+1];
 }
 
-void Display::add(Digit d)
+void GabrielaDisplay::add(Digit d)
 {
     shift();
     disp[18] = d + '0';
     print();    
 }
 
-void Display::addDecimalSeparator()
+void GabrielaDisplay::addDecimalSeparator()
 {
     shift();
     disp[18] = '.';
     print();
 }
-void Display::setSignal()
+void GabrielaDisplay::setSignal()
 {
     disp[0] = '-';
     print();
 }
 
-void Display::setError()
+void GabrielaDisplay::setError()
 {
     disp[1] = 'E';
     print();
 }
 
-void Display::clear()
+void GabrielaDisplay::clear()
 {
     memset(disp, ' ', 19);
     print();

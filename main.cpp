@@ -1,8 +1,8 @@
-#include "calculator.hpp"
+#include "GabrielaCalculator.hpp"
 
 int main()
 {
-    Calculator Calc;
+    GabrielaCalculator Calc;
     Calc.run();
     
     return 0;

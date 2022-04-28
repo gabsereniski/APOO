@@ -22,7 +22,7 @@ void GabrielaDisplay::print()
 
       puts("r: square root          %: percentage");
       puts("C: clear                A: clear all");
-      puts("M: memory real          #: memory clear");
+      puts("M: memory read          #: memory clear");
       puts("~: memory subtraction   ^: memory addition");
       puts("Q: quit\n");
 

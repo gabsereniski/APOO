@@ -14,16 +14,16 @@ class GabrielaCpu: public GabrielaReceiver{
     GabrielaDisplay *display;
     Operation op;
     
-    std::string regs[2];
-    float ops[2];
-    int regsNod[2];
-    bool regHasDecSep[2];
-    Signal regsSign[2];
+    std::string reg[2];
+    float fReg[2];
+    int numOfDigits[2];
+    bool hasDecSep[2];
+    Signal sign[2];
 
     float mem;
 
     char lastReceived;
-    int curReg;
+    int cur;
     bool overflow;
     
     void clearRegister(int r);

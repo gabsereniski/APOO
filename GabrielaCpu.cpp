@@ -110,6 +110,8 @@ float GabrielaCpu::ALU(float op1, float op2, Operation op)
 void GabrielaCpu::compute()
 {
     regs[0] = std::to_string(ops[0]);
+    regs[0] += "000000000000000";
+
     regsNod[0] = countDigits(0);
     
     if(overflow) display->setError();    

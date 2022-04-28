@@ -10,6 +10,7 @@ class GabrielaCalculator{
     GabrielaKeyboard *keyboard;
     GabrielaCpu *cpu;
     char buffer;
+
 public:
     GabrielaCalculator();
     ~GabrielaCalculator();

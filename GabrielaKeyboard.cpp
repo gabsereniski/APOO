@@ -21,20 +21,7 @@ GabrielaKeyboard::~GabrielaKeyboard()
     keyCount = 0;
 }
 
-void GabrielaKeyboard::setCpu(GabrielaCpu *cpu)
-{
-    this->cpu = cpu;
-}
-
-void GabrielaKeyboard::addKey(GabrielaKey *key)
-{
-    if(keyCount < 24)
-    {
-        keys[keyCount] = key;
-        keys[keyCount]->setReceiver(this);
-        keyCount++;
-    }
-}
+//PRIVATE FUNCTIONS---------------------------------------------//
 
 bool GabrielaKeyboard::build()
 {
@@ -78,6 +65,24 @@ bool GabrielaKeyboard::build()
     return true;
 }
 
+//PUBLIC FUNCTIONS---------------------------------------------//
+
+
+void GabrielaKeyboard::setCpu(GabrielaCpu *cpu)
+{
+    this->cpu = cpu;
+}
+
+void GabrielaKeyboard::addKey(GabrielaKey *key)
+{
+    if(keyCount < 24)
+    {
+        keys[keyCount] = key;
+        keys[keyCount]->setReceiver(this);
+        keyCount++;
+    }
+}
+
 void GabrielaKeyboard::receiveDigit(Digit d)
 {
     if(cpu) cpu->receiveDigit(d);
@@ -92,5 +97,3 @@ void GabrielaKeyboard::receiveControl(Control ctrl)
 {
     if(cpu) cpu->receiveControl(ctrl);
 }
-
-void GabrielaKeyboard::receiveSignal(Signal s){}

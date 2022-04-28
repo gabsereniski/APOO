@@ -8,7 +8,6 @@ GabrielaCalculator::GabrielaCalculator()
 
     keyboard->setCpu(cpu);
     cpu->setDisplay(display);
-
 }
 
 GabrielaCalculator::~GabrielaCalculator()
@@ -21,14 +20,12 @@ GabrielaCalculator::~GabrielaCalculator()
 void GabrielaCalculator::run()
 {
     display->clear();
+    
     while(std::cin >> buffer)
     {
         buffer = tolower(buffer);
 
-        if(buffer == 'q')
-        {
-            return;
-        }
+        if(buffer == 'q') return;
 
         switch(buffer)
         {

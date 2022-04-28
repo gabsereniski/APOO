@@ -26,7 +26,6 @@ public:
     void receiveDigit(Digit d);
     void receiveOperation(Operation op);
     void receiveControl(Control ctrl);
-    void receiveSignal(Signal s);
 
     friend class GabrielaCalculator;
 };

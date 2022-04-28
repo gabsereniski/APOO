@@ -27,17 +27,16 @@ class GabrielaCpu: public GabrielaReceiver{
     bool overflow;
     
     void clearRegister(int r);
-
+    void reset();
     int countDigits(int r);
     float isFloat(float n);
+
+    void updateOp(Operation op);
 
     float ALU(float op1, float op2, Operation op);
     void compute();
 
-    void updateOp(Operation op);
-    void updateDisplay(int r);
-
-    void reset();
+    void sendDigits(int r);
 
 public:
     GabrielaCpu();
@@ -47,7 +46,6 @@ public:
     void receiveDigit(Digit d);
     void receiveOperation(Operation op);
     void receiveControl(Control ctrl);
-    void receiveSignal(Signal s);
 };
 
 #endif

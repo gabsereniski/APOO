@@ -8,29 +8,36 @@ GabrielaDisplay::GabrielaDisplay()
 
 GabrielaDisplay::~GabrielaDisplay(){}
 
+//PRIVATE FUNCTIONS---------------------------------------------//
+
 void GabrielaDisplay::print()
 {
     system("clear");
-    printf("\n     _______________________\n");
-    printf("    |  ___________________  |\n");
-    printf("    | |%s| |\n", disp);
-    printf("    | |___________________| |\n");
-    printf("    |_______________________|\n\n");
+    puts("");
+    printf("         _______________________\n");
+    printf("        |  ___________________  |\n");
+    printf("        | |%s| |\n", disp);
+    printf("        | |___________________| |\n");
+    printf("        |_______________________|\n\n");
 
-    puts("r: square root          %: percentage");
-    puts("C: clear                A: clear all");
-    puts("M: memory real          #: memory clear");
-    puts("~: memory subtraction   ^: memory addition");
-    puts("Q: quit\n");
+      puts("r: square root          %: percentage");
+      puts("C: clear                A: clear all");
+      puts("M: memory real          #: memory clear");
+      puts("~: memory subtraction   ^: memory addition");
+      puts("Q: quit\n");
 
     printf(">> ");
 }
 
 void GabrielaDisplay::shift()
 {
-    for(int i = 2; i < 18; i++)
+    for(int i = 10; i < 18; i++)
         disp[i] = disp[i+1];
+    /*for(int i = 2; i <= 10; i++)
+        disp[i] = ' ';*/
 }
+
+//PUBLIC FUNCTIONS-------------------------------------------//
 
 void GabrielaDisplay::add(Digit d)
 {
@@ -53,7 +60,12 @@ void GabrielaDisplay::setSignal()
 
 void GabrielaDisplay::setError()
 {
-    disp[1] = 'E';
+    clear();
+    disp[7] = 'E';
+    disp[8] = 'R';
+    disp[9] = 'R';
+    disp[10] = 'O';
+    disp[11] = 'R';
     print();
 }
 

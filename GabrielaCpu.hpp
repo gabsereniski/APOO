@@ -30,6 +30,7 @@ class GabrielaCpu: public GabrielaReceiver{
     void reset();
     int countDigits(int r);
     float isFloat(float n);
+    void conversion(int r);
 
     void updateOp(Operation op);
 

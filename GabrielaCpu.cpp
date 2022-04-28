@@ -85,7 +85,16 @@ float GabrielaCpu::isFloat(float op)
     int n = op;
     return op - (float)n;
 }
+void GabrielaCpu::conversion(int r)
+{
+    regs[r] += "000000000000000";
 
+    regsNod[r] = countDigits(r);
+    
+    if(overflow) display->setError();    
+    if(ops[r] < 0) regsSign[r] = NEGATIVE;
+    if(isFloat(ops[r])) regHasDecSep[r] = true;
+}
 void GabrielaCpu::updateOp(Operation op)
 {
     this->op = op;
@@ -110,13 +119,8 @@ float GabrielaCpu::ALU(float op1, float op2, Operation op)
 void GabrielaCpu::compute()
 {
     regs[0] = std::to_string(ops[0]);
-    regs[0] += "000000000000000";
-
-    regsNod[0] = countDigits(0);
     
-    if(overflow) display->setError();    
-    if(ops[0] < 0) regsSign[0] = NEGATIVE;
-    if(isFloat(ops[0])) regHasDecSep[0] = true;
+    conversion(0);
 
     sendDigits(0);
 
@@ -258,6 +262,7 @@ void GabrielaCpu::receiveOperation(Operation op)
 
 void GabrielaCpu::receiveControl(Control ctrl)
 {
+    int r = !(lastReceived == '=');
     switch(ctrl)
     {
         case CLEAR:
@@ -288,9 +293,11 @@ void GabrielaCpu::receiveControl(Control ctrl)
             break;
 
         case MEMORY_READ:
-            ops[curReg] = mem;
-            regs[curReg] = std::to_string(mem);
-            sendDigits(curReg);
+            ops[r] = mem;
+            regs[r] = std::to_string(mem);
+            conversion(r);
+            sendDigits(r);
+
             break;
 
         case MEMORY_CLEAR:
@@ -301,7 +308,7 @@ void GabrielaCpu::receiveControl(Control ctrl)
             if(lastReceived == '=' || lastReceived == 'o')       
                 mem += std::stof(regs[0]);
             else
-                mem += std::stof(regs[1]);
+                mem += std::stof(regs[curReg]);
             regs[curReg] = "0";
             break;
         
@@ -309,10 +316,10 @@ void GabrielaCpu::receiveControl(Control ctrl)
             if(lastReceived == '=' || lastReceived == 'o')       
                 mem -= std::stof(regs[0]);
             else
-                mem -= std::stof(regs[1]);
+                mem -= std::stof(regs[curReg]);
             regs[curReg] = "0";
             break;
-        
+
         case EQUAL:
             receiveOperation((Operation)GET_RESULT);
             lastReceived = '=';

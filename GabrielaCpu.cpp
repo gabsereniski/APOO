@@ -263,6 +263,7 @@ void GabrielaCpu::receiveOperation(Operation op)
 void GabrielaCpu::receiveControl(Control ctrl)
 {
     int r = !(lastReceived == '=');
+    
     switch(ctrl)
     {
         case CLEAR:

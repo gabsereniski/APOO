@@ -15,7 +15,7 @@ GabrielaDisplay::~GabrielaDisplay(){}
 
 void GabrielaDisplay::print()
 {
-    //system("clear");
+    system("clear");
     puts("");
     printf("             _______________________\n");
     printf("            |  ___________________  |\n");

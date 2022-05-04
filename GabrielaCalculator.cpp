@@ -1,13 +1,14 @@
 #include "GabrielaCalculator.hpp"
+#include <iostream>
+
+#define OPERATION_SHIFT 10
+#define CONTROL_SHIFT 16
 
 GabrielaCalculator::GabrielaCalculator()
 {
-    cpu = new GabrielaCpu;
-    keyboard = new GabrielaKeyboard;
-    display = new GabrielaDisplay;
-
-    keyboard->setCpu(cpu);
-    cpu->setDisplay(display);
+    cpu = nullptr;
+    keyboard = nullptr;
+    display = nullptr;
 }
 
 GabrielaCalculator::~GabrielaCalculator()
@@ -15,6 +16,19 @@ GabrielaCalculator::~GabrielaCalculator()
     delete cpu;
     delete keyboard;
     delete display;
+}
+
+void GabrielaCalculator::setDisplay(Display* display)
+{
+    this->display = display;
+}
+void GabrielaCalculator::setCpu(Cpu* cpu)
+{
+    this->cpu = cpu;
+}
+void GabrielaCalculator::setKeyboard(Keyboard* keyboard)
+{
+    this->keyboard = keyboard;
 }
 
 void GabrielaCalculator::run()
@@ -29,32 +43,32 @@ void GabrielaCalculator::run()
 
         switch(buffer)
         {
-            case '0': keyboard->keys[20]->press(); break;
-            case '1': keyboard->keys[14]->press(); break;
-            case '2': keyboard->keys[15]->press(); break;
-            case '3': keyboard->keys[16]->press(); break;
-            case '4': keyboard->keys[9]->press(); break;
-            case '5': keyboard->keys[10]->press(); break;
-            case '6': keyboard->keys[11]->press(); break;
-            case '7': keyboard->keys[4]->press(); break;
-            case '8': keyboard->keys[5]->press(); break;
-            case '9': keyboard->keys[6]->press(); break;
+            case '0': keyboard->keys[ZERO]->press(); break;
+            case '1': keyboard->keys[ONE]->press(); break;
+            case '2': keyboard->keys[TWO]->press(); break;
+            case '3': keyboard->keys[THREE]->press(); break;
+            case '4': keyboard->keys[FOUR]->press(); break;
+            case '5': keyboard->keys[FIVE]->press(); break;
+            case '6': keyboard->keys[SIX]->press(); break;
+            case '7': keyboard->keys[SEVEN]->press(); break;
+            case '8': keyboard->keys[EIGHT]->press(); break;
+            case '9': keyboard->keys[NINE]->press(); break;
 
-            case '+': keyboard->keys[22]->press(); break;
-            case '-': keyboard->keys[17]->press(); break;
-            case '/': keyboard->keys[7]->press(); break;
-            case '*': keyboard->keys[12]->press(); break;
-            case 'r': keyboard->keys[18]->press(); break;
-            case '%': keyboard->keys[23]->press(); break;
+            case '+': keyboard->keys[ADDITION + OPERATION_SHIFT]->press(); break;
+            case '-': keyboard->keys[SUBTRACTION + OPERATION_SHIFT]->press(); break;
+            case '/': keyboard->keys[DIVISION + OPERATION_SHIFT]->press(); break;
+            case '*': keyboard->keys[MULTIPLICATION + OPERATION_SHIFT]->press(); break;
+            case 'r': keyboard->keys[SQUARE_ROOT + OPERATION_SHIFT]->press(); break;
+            case '%': keyboard->keys[PERCENTAGE + OPERATION_SHIFT]->press(); break;
             
-            case 'c': keyboard->keys[13]->press(); break;
-            case 'a': keyboard->keys[8]->press(); break;
-            case '.': keyboard->keys[19]->press(); break;
-            case 'm': keyboard->keys[0]->press(); break;
-            case '#': keyboard->keys[1]->press(); break;
-            case '~': keyboard->keys[2]->press(); break;
-            case '^': keyboard->keys[3]->press(); break;
-            case '=': keyboard->keys[21]->press(); break;
+            case 'c': keyboard->keys[CLEAR + CONTROL_SHIFT]->press(); break;
+            case 'a': keyboard->keys[RESET + CONTROL_SHIFT]->press(); break;
+            case '.': keyboard->keys[DECIMAL_SEPARATOR + CONTROL_SHIFT]->press(); break;
+            case 'm': keyboard->keys[MEMORY_READ + CONTROL_SHIFT]->press(); break;
+            case '#': keyboard->keys[MEMORY_CLEAR + CONTROL_SHIFT]->press(); break;
+            case '~': keyboard->keys[MEMORY_SUBTRACTION + CONTROL_SHIFT]->press(); break;
+            case '^': keyboard->keys[MEMORY_ADDITION + CONTROL_SHIFT]->press(); break;
+            case '=': keyboard->keys[EQUAL + CONTROL_SHIFT]->press(); break;
 
             default: break;
         }

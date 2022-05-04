@@ -1,6 +1,7 @@
 #include "GabrielaCpu.hpp"
 
-#define GET_RESULT -1
+#include <cmath>
+#include <sstream>
 
 GabrielaCpu::GabrielaCpu()
 {
@@ -66,7 +67,7 @@ int GabrielaCpu::countDigits(int r)
     int d = 0;
     std::string fl = std::to_string(f);
 
-    for(int i = 0; i < fl.size(); i++)
+    for(int i = 1; i < fl.size(); i++)
     {
         bool flag = 1;
         for(int j = i+1; j < fl.size(); j++)
@@ -91,7 +92,7 @@ void GabrielaCpu::conversion(int r)
 
     numOfDigits[r] = countDigits(r);
     
-    if(overflow) display->setError();    
+    if(overflow) if(display) display->setError();    
     if(fReg[r] < 0) sign[r] = NEGATIVE;
     if(isFloat(fReg[r])) hasDecSep[r] = true;
 }
@@ -129,11 +130,11 @@ void GabrielaCpu::compute()
 
 void GabrielaCpu::sendDigits(int r)
 {
-    display->clear();
+    if(display) display->clear();
 
     int c = 0, i = 0;
 
-    if(sign[r]) display->setSignal();
+    if(sign[r]) if(display) display->setSignal(NEGATIVE);
     
     while(c < numOfDigits[r])
     {
@@ -145,16 +146,16 @@ void GabrielaCpu::sendDigits(int r)
         }
         if(d == '.' && hasDecSep[r])
         {
-            display->addDecimalSeparator();
+            if(display) display->setDecimalSeparator();
             i++;
             continue;
         }
         if(d == '.' && !hasDecSep[r]) break;
-        display->add((Digit)(d - '0'));
+        if(display) display->add((Digit)(d - '0'));
         c++, i++;
         if(c > 8)
         {
-            display->setError();
+            if(display) display->setError();
             break;
         }
 
@@ -163,7 +164,7 @@ void GabrielaCpu::sendDigits(int r)
 
 //PUBLIC FUNCTIONS-------------------------------------------//
 
-void GabrielaCpu::setDisplay(GabrielaDisplay* display)
+void GabrielaCpu::setDisplay(Display* display)
 {
     this->display = display;
 }
@@ -173,11 +174,15 @@ void GabrielaCpu::receiveDigit(Digit d)
     if(lastReceived == '\0' || lastReceived == '=') 
     {
         cur = 0; 
-        display->clear();
+        if(display) display->clear();
         clearRegister(0);
         clearRegister(1);
     }
-    else if(lastReceived == 'o') cur = 1, display->clear();
+    else if(lastReceived == 'o')
+    {
+        cur = 1;
+        if(display) display->clear();
+    }
 
     if(lastReceived != 'd' && lastReceived != '-' && lastReceived != '.')
         clearRegister(cur);
@@ -188,7 +193,7 @@ void GabrielaCpu::receiveDigit(Digit d)
 
         reg[cur] += std::to_string(d);
         numOfDigits[cur]++;
-        display->add(d);
+        if(display) display->add(d);
     }
     
     lastReceived = 'd';
@@ -198,11 +203,11 @@ void GabrielaCpu::receiveOperation(Operation op)
 {      
     if((lastReceived == 'o' || lastReceived == '\0') && (op == SUBTRACTION))
     {
-        display->clear();
+        if(display) display->clear();
         sign[cur] = NEGATIVE;
         reg[cur] = "-";
         lastReceived = '-';
-        display->setSignal();
+        if(display) display->setSignal(NEGATIVE);
         return;
     }
 
@@ -250,30 +255,29 @@ void GabrielaCpu::receiveOperation(Operation op)
         compute();
     } 
     
-    else if(lastReceived == '=' && op == GET_RESULT)
+    else if(lastReceived == '=' && op == NONE)
     {
         fReg[0] = ALU(fReg[0], fReg[1], this->op);
         compute();
     }
     
-    if(op != GET_RESULT && op != SQUARE_ROOT && op != PERCENTAGE)
+    if(op != NONE && op != SQUARE_ROOT && op != PERCENTAGE)
         this->op = op, lastReceived = 'o';
 }
 
 void GabrielaCpu::receiveControl(Control ctrl)
 {
     int r = !(lastReceived == '=');
-    
     switch(ctrl)
     {
         case CLEAR:
             clearRegister(cur);
-            display->clear();
+            if(display) display->clear();
             break;
         
         case RESET:
             reset();
-            display->clear();
+            if(display) display->clear();
             break;
         
         case DECIMAL_SEPARATOR:
@@ -290,7 +294,7 @@ void GabrielaCpu::receiveControl(Control ctrl)
                 hasDecSep[cur] = true;
             }
             lastReceived = '.';
-            display->addDecimalSeparator();
+            if(display) display->setDecimalSeparator();
             break;
 
         case MEMORY_READ:
@@ -322,7 +326,7 @@ void GabrielaCpu::receiveControl(Control ctrl)
             break;
 
         case EQUAL:
-            receiveOperation((Operation)GET_RESULT);
+            receiveOperation(NONE);
             lastReceived = '=';
             break;
     }

@@ -1,17 +1,10 @@
 #ifndef _GABRIELACPU_H_
 #define _GABRIELACPU_H_
 
-#include "commons.hpp"
-#include "GabrielaReceiver.hpp"
-#include "GabrielaKeyboard.hpp"
-#include "GabrielaDisplay.hpp"
+#include "calculator.h"
 
 #include <iostream>
-#include <cmath>
-#include <sstream>
-
-class GabrielaCpu: public GabrielaReceiver{
-    GabrielaDisplay *display;
+class GabrielaCpu: public Cpu{
     Operation op;
     
     std::string reg[2];
@@ -43,7 +36,7 @@ public:
     GabrielaCpu();
     ~GabrielaCpu();
     
-    void setDisplay(GabrielaDisplay* display);
+    void setDisplay(Display* display);
     void receiveDigit(Digit d);
     void receiveOperation(Operation op);
     void receiveControl(Control ctrl);
